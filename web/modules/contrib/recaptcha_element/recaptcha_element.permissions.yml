@@ -1,0 +1,3 @@
+administer recaptcha_element:
+  title: 'Administer ReCaptcha Element'
+  description: 'Administer configuration of ReCaptcha Element module.'

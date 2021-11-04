@@ -1,0 +1,9 @@
+services:
+  recaptcha_element.logger:
+    class: Drupal\recaptcha_element\RecaptchaLogger
+    arguments: ['@logger.channel.recaptcha_element', '@config.factory']
+
+  logger.channel.recaptcha_element:
+    class: Drupal\Core\Logger\LoggerChannel
+    factory: logger.factory:get
+    arguments: ['recaptcha_element']

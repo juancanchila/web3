@@ -1,0 +1,4 @@
+recaptcha_element.settings:
+  route_name: recaptcha_element.settings
+  title: Settings
+  base_route: recaptcha_element.settings

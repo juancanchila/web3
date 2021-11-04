@@ -1,0 +1,11 @@
+name: 'Webform JavaScript Field'
+type: module
+description: 'Provides ability to specify JavaScript snippet for Webform components.'
+core: 8.x
+core_version_requirement: ^8 || ^9
+package: 'Webform'
+
+# Information added by Drupal.org packaging script on 2021-10-09
+version: '2.0.1'
+project: 'webform_javascript_field'
+datestamp: 1633802290

@@ -1,0 +1,13 @@
+services:
+  ip2country.lookup:
+    class: Drupal\ip2country\Ip2CountryLookup
+    arguments: ['@request_stack', '@database']
+  ip2country.manager:
+    class: Drupal\ip2country\Ip2CountryManager
+    arguments: ['@database', '@logger.factory', '@state', '@datetime.time', '@module_handler']
+
+  cache_context.ip.country:
+    class: Drupal\ip2country\Cache\Context\Ip2CountryCacheContext
+    arguments: ['@request_stack', '@ip2country.lookup']
+    tags:
+      - { name: cache.context }

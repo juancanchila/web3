@@ -1,0 +1,13 @@
+name: 'Webform GeoIP Restriction'
+type: module
+description: 'Webform GeoIP Restriction allows you to restrict access to a webform depending on the country.'
+core_version_requirement: ^8 || ^9
+package: 'Webform'
+dependencies:
+  - webform:webform
+  - ip2country:ip2country
+
+# Information added by Drupal.org packaging script on 2021-07-05
+version: '1.0.8'
+project: 'webform_geoip_restriction'
+datestamp: 1625490330

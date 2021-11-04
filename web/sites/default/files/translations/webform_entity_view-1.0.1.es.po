@@ -1,0 +1,26 @@
+# Spanish translation of Webform Entity View (1.0.1)
+# Copyright (c) 2020 by the Spanish translation team
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Webform Entity View (1.0.1)\n"
+"POT-Creation-Date: 2020-10-24 10:46+0000\n"
+"PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
+"Language-Team: Spanish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+
+msgid "Entity"
+msgstr "Entidad"
+msgid "Webform"
+msgstr "Webform"
+msgid "Bundle"
+msgstr "Paquete"
+msgid "Display on"
+msgstr "Mostrar en"
+msgid "View mode"
+msgstr "Modo de vista"
+msgid "Entity reference elements"
+msgstr "Elementos de referencia de la entidad"

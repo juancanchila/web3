@@ -1,0 +1,16 @@
+{
+  "name": "drupal/webform_geoip_restrcition",
+  "type": "drupal-module",
+  "description": "Webform GeoIP Restriction allows you to restrict access to a webform depending on the country.",
+  "keywords": ["Drupal"],
+  "license": "GPL-2.0+",
+  "homepage": "https://www.drupal.org/project/webform_geoip_restriction",
+  "minimum-stability": "dev",
+  "support": {
+    "issues": "https://www.drupal.org/project/issues/webform_geoip_restrcition",
+    "source": "https://git.drupalcode.org/project/webform_geoip_restrcition"
+  },
+  "require": {
+    "drupal/webform" : "^5 || ^6"
+  }
+}

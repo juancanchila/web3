@@ -1,0 +1,6 @@
+services:
+  ip2country.commands:
+    class: \Drupal\ip2country\Commands\Ip2CountryCommands
+    arguments: ['@state', '@date.formatter', '@config.factory', '@country_manager', '@ip2country.lookup', '@ip2country.manager', '@logger.factory']
+    tags:
+      - { name: drush.command }

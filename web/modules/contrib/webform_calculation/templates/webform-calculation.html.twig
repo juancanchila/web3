@@ -1,0 +1,20 @@
+{#
+/**
+ * @file
+ * Default theme implementation for webform calculation.
+ *
+ * Available variables:
+ * - submission: The webform submission.
+ * - result: Calculated result for the webform.
+ *
+ * @ingroup themeable
+ */
+#}
+
+<h2>{{ 'Submitted non-iterable values'|t }}</h2>
+{% for key, value in submission.getData if value is not iterable %}
+  <p>{{ key }}: {{ value }}</p>
+{% endfor %}
+
+<h2>{{ 'Result'|t }}</h2>
+Evaluated field: {{ result }}

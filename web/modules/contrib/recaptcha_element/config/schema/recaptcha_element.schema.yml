@@ -1,0 +1,47 @@
+recaptcha_element.settings:
+  type: config_object
+  label: 'ReCAPTCHA Element settings'
+  mapping:
+    enabled:
+      type: boolean
+      label: 'Whether or not to reCAPTCHA integration is enabled'
+    site_key:
+      type: string
+      label: 'The site key'
+    secret_key:
+      type: string
+      label: 'The secret key'
+    element_defaults:
+      type: recaptcha_element.element
+      label: 'The default ReCAPTCHA element settings'
+    log_successes:
+      type: boolean
+      label: 'Whether or not to log successful reCAPTCHA responses'
+
+recaptcha_element.element:
+  type: mapping
+  label: 'ReCAPTCHA Element settings'
+  mapping:
+    action:
+      type: string
+      label: 'The ReCAPTCHA action'
+    threshold:
+      type: string
+      label: 'The ReCAPTCHA score threshold'
+    verify_hostname:
+      type: boolean
+      label: 'Whether or not to check the hostname during reCAPTCHA verification'
+    error_message:
+      type: text
+      label: 'Error message'
+
+webform.handler.recaptcha_element:
+  type: mapping
+  label: 'ReCAPTCHA Element handler settings'
+  mapping:
+    element_name:
+      type: string
+      label: 'The name for the hidden input element used to store reCAPTCHA tokens'
+    recaptcha:
+      type: recaptcha_element.element
+      label: 'The ReCAPTCHA element settings'

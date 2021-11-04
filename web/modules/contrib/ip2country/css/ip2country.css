@@ -1,0 +1,26 @@
+/**
+ * @file
+ * Styles for ip2country module.
+ */
+
+#dbthrobber.working {
+  background-image: url(/core/misc/throbber-active.gif);
+  background-repeat: no-repeat;
+  /* 20px = half height of throbber */
+  background-position: 100% -20px; /* LTR */
+  color: green;
+  padding: 0 1.5em 0 0; /* LTR */
+}
+[dir="rtl"] #dbthrobber.working {
+  background-position: 0 -20px;
+  padding: 0 0 0 1.5em;
+}
+
+#dbthrobber.completed {
+  color: green;
+}
+
+#dbthrobber.message,
+#lookup-message.message {
+  color: red;
+}

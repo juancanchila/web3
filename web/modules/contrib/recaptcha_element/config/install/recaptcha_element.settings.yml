@@ -1,0 +1,9 @@
+enabled: true
+site_key: ''
+secret_key: ''
+element_defaults:
+  action: 'default'
+  threshold: 0.5
+  verify_hostname: false
+  error_message: 'Antibot verification failed, please try again.'
+log_successes: false

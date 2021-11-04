@@ -1,0 +1,42 @@
+<?php
+
+/**
+ * @file
+ * Provides common hooks and functions for the Recaptcha Element module.
+ */
+
+use Drupal\Core\Url;
+
+/**
+ * Implements hook_help().
+ */
+function recaptcha_element_help($route_name) {
+  switch ($route_name) {
+    case 'help.page.recaptcha_element':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('This module provides reCAPTCHA v3 integration.') . '</p>';
+
+      $output .= '<p>';
+      $output .= t('Visit the <a href=":project_link">ReCaptcha Element project pages</a> on Drupal.org for more information.', [
+        ':project_link' => Url::fromUri('https://www.drupal.org/project/recaptcha_element')->toString(),
+      ]);
+      $output .= '</p>';
+
+      return $output;
+  }
+}
+
+/**
+ * Implements hook_library_info_alter().
+ */
+function recaptcha_element_library_info_alter(&$libraries, $extension) {
+  if ($extension === 'recaptcha_element' && isset($libraries['google.recaptcha'])) {
+    $api_url = array_keys($libraries['google.recaptcha']['js']);
+    $api_url = array_shift($api_url);
+    $site_key = \Drupal::config('recaptcha_element.settings')->get('site_key');
+    $key = $api_url . '?render=' . $site_key;
+    $js = array_shift($libraries['google.recaptcha']['js']);
+    $libraries['google.recaptcha']['js'][$key] = $js;
+  }
+}

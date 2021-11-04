@@ -1,0 +1,17 @@
+<div class="nlb-wrapper">
+  {{ data|raw }}
+
+  {% if editable == 1 %}
+    <div class="add-templates">
+      {{ link_add_template }}
+    </div>
+
+    <div class="nlb-save-wrapper">
+      {{ btn_add_section }}
+      <a href="#" class="btn-save-data btn btn-primary nlb-save-data" title="{{ 'Save Layout'|t }}">
+        <i class="fas fa-save"></i>
+      </a>
+    </div>
+  {% endif %}
+
+</div>

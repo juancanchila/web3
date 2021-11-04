@@ -1,0 +1,190 @@
+<?php
+
+/**
+ * @file
+ * Integrates third party settings on the Webform for GeoIP Restriction.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Locale\CountryManager;
+use Drupal\webform\WebformInterface;
+use Drupal\webform\WebformSubmissionInterface;
+use Drupal\Core\Session\AccountInterface;
+use Drupal\Core\Access\AccessResult;
+
+/**
+ * Implements hook_help().
+ */
+function webform_geoip_restriction_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the webform_geoip_restriction module.
+    case 'help.page.webform_geoip_restriction':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Webform GeoIP Restriction allows you to restrict access to a webform depending on the country.') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_webform_admin_third_party_settings_form_alter().
+ */
+function webform_geoip_restriction_webform_admin_third_party_settings_form_alter(&$form, FormStateInterface $form_state) {
+  /** @var \Drupal\webform\WebformThirdPartySettingsManagerInterface $third_party_settings_manager */
+  $third_party_settings_manager = \Drupal::service('webform.third_party_settings_manager');
+  $webform_geoip_restriction = $third_party_settings_manager->getThirdPartySetting('webform_geoip_restriction', 'webform_geoip_restriction');
+  $countries = $third_party_settings_manager->getThirdPartySetting('webform_geoip_restriction', 'countries');
+
+  $form['third_party_settings']['webform_geoip_restriction'] = [
+    '#type' => 'details',
+    '#title' => t('GeoIP Restriction'),
+    '#description' => t('Provides GeoIP Restriction challenges to forms.'),
+    '#open' => TRUE,
+  ];
+  $form['third_party_settings']['webform_geoip_restriction']['webform_geoip_restriction'] = [
+    '#type' => 'checkbox',
+    '#title' => t('Restrict all webforms with GeoIP.'),
+    '#default_value' => $webform_geoip_restriction,
+    '#return_value' => TRUE,
+  ];
+  $options = CountryManager::getStandardList();
+  $form['third_party_settings']['webform_geoip_restriction']['countries'] = [
+    '#type' => 'select',
+    '#title' => t('Countries'),
+    '#options' => $options,
+    '#default_value' => $countries,
+    '#return_value' => TRUE,
+    '#multiple' => TRUE,
+    '#states' => [
+      'visible' => [
+        ':input[name="third_party_settings[webform_geoip_restriction][webform_geoip_restriction]"]' => ['checked' => TRUE],
+      ],
+    ],
+  ];
+  $my_country = \Drupal::service('ip2country.lookup')->getCountry();
+  $form['third_party_settings']['webform_geoip_restriction']['info'] = [
+    '#type' => 'markup',
+    '#markup' => '<div class="messages messages--info">' . t('Your country is %country', ['%country' => $options[$my_country] ?: 'local']) . '</div>',
+  ];
+}
+
+/**
+ * Implements hook_webform_third_party_settings_form_alter().
+ */
+function webform_geoip_restriction_webform_third_party_settings_form_alter(&$form, FormStateInterface $form_state) {
+  /** @var \Drupal\webform\WebformThirdPartySettingsManagerInterface $third_party_settings_manager */
+  $third_party_settings_manager = \Drupal::service('webform.third_party_settings_manager');
+  $default_webform_geoip_restriction = $third_party_settings_manager->getThirdPartySetting('webform_geoip_restriction', 'webform_geoip_restriction') ?: [];
+  $default_countries = $third_party_settings_manager->getThirdPartySetting('webform_geoip_restriction', 'countries') ?: [];
+
+  /** @var \Drupal\webform\WebformInterface $webform */
+  $webform = $form_state->getFormObject()->getEntity();
+  $webform_geoip_restriction = $webform->getThirdPartySetting('webform_geoip_restriction', 'webform_geoip_restriction') ?: [];
+  $countries = $webform->getThirdPartySetting('webform_geoip_restriction', 'countries') ?: [];
+
+  $form['third_party_settings']['webform_geoip_restriction'] = [
+    '#type' => 'details',
+    '#title' => t('GeoIP Restriction'),
+    '#description' => t('Provides GeoIP Restriction challenges to form.'),
+    '#open' => TRUE,
+  ];
+  $form['third_party_settings']['webform_geoip_restriction']['webform_geoip_restriction'] = [
+    '#type' => 'checkbox',
+    '#title' => t('Restrict the webform with GeoIP.'),
+    '#default_value' => $webform_geoip_restriction ?: $default_webform_geoip_restriction,
+    '#return_value' => TRUE,
+  ];
+  $options = CountryManager::getStandardList();
+  $form['third_party_settings']['webform_geoip_restriction']['countries'] = [
+    '#type' => 'select',
+    '#title' => t('Countries'),
+    '#options' => $options,
+    '#default_value' => $countries ?: $default_countries,
+    '#return_value' => TRUE,
+    '#multiple' => TRUE,
+    '#states' => [
+      'visible' => [
+        ':input[name="third_party_settings[webform_geoip_restriction][webform_geoip_restriction]"]' => ['checked' => TRUE],
+      ],
+    ],
+  ];
+  $my_country = \Drupal::service('ip2country.lookup')->getCountry();
+  $form['third_party_settings']['webform_geoip_restriction']['info'] = [
+    '#type' => 'markup',
+    '#markup' => '<div class="messages messages--info">' . t('Your country is %country', ['%country' => $options[$my_country] ?: 'local']) . '</div>',
+  ];
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_access() for webform entities.
+ */
+function webform_geoip_restriction_webform_access(WebformInterface $webform, $operation, AccountInterface $account) {
+  /** @var \Drupal\webform\WebformThirdPartySettingsManagerInterface $third_party_settings_manager */
+  $third_party_settings_manager = \Drupal::service('webform.third_party_settings_manager');
+
+  $webform_geoip_restriction = $webform->getThirdPartySetting('webform_geoip_restriction', 'webform_geoip_restriction') ?: $third_party_settings_manager->getThirdPartySetting('webform_geoip_restriction', 'webform_geoip_restriction');
+  if ($webform_geoip_restriction) {
+    $countries = $webform->getThirdPartySetting('webform_geoip_restriction', 'countries') ?: $third_party_settings_manager->getThirdPartySetting('webform_geoip_restriction', 'countries');
+    $my_country = \Drupal::service('ip2country.lookup')->getCountry();
+
+    // Prevent recursion when a webform is being passed as the source entity
+    // via the URL.
+    // @see \Drupal\webform\Plugin\WebformSourceEntity\QueryStringWebformSourceEntity::getSourceEntity
+    if (\Drupal::request()->query->get('source_entity_type') === 'webform') {
+      return AccessResult::neutral();
+    }
+    
+    $access = AccessResult::forbiddenIf($my_country !== FALSE && !in_array($my_country, $countries));
+  }
+  else {
+    $access = AccessResult::neutral();
+  }
+
+  /** @var \Drupal\webform\WebformRequestInterface $request_handler */
+  $request_handler = \Drupal::service('webform.request');
+  
+  if ($source_entity = $request_handler->getCurrentSourceEntity()) {
+    $access->addCacheableDependency($source_entity);
+  }
+
+  return $access->cachePerUser()
+    ->addCacheableDependency($webform)
+    ->addCacheContexts(['ip.country']);
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_access() for webform_submission entities.
+ */
+function webform_geoip_restriction_webform_submission_access(WebformSubmissionInterface $webform_submission, $operation, AccountInterface $account) {
+  /** @var \Drupal\webform\WebformThirdPartySettingsManagerInterface $third_party_settings_manager */
+  $third_party_settings_manager = \Drupal::service('webform.third_party_settings_manager');
+
+  // Get webform access rules.
+  $webform = $webform_submission->getWebform();
+
+  $webform_geoip_restriction = $webform->getThirdPartySetting('webform_geoip_restriction', 'webform_geoip_restriction') ?: $third_party_settings_manager->getThirdPartySetting('webform_geoip_restriction', 'webform_geoip_restriction');
+  if ($webform_geoip_restriction) {
+    $countries = $webform->getThirdPartySetting('webform_geoip_restriction', 'countries') ?: $third_party_settings_manager->getThirdPartySetting('webform_geoip_restriction', 'countries');
+    $my_country = \Drupal::service('ip2country.lookup')->getCountry();
+
+    $access = AccessResult::forbiddenIf($my_country !== FALSE && !in_array($my_country, $countries));
+  }
+  else {
+    $access = AccessResult::neutral();
+  }
+
+  /** @var \Drupal\webform\WebformRequestInterface $request_handler */
+  $request_handler = \Drupal::service('webform.request');
+  
+  if ($source_entity = $request_handler->getCurrentSourceEntity()) {
+    $access->addCacheableDependency($source_entity);
+  }
+
+  return $access->cachePerUser()
+    ->addCacheableDependency($webform)
+    ->addCacheableDependency($webform_submission)
+    ->addCacheContexts(['ip.country']);
+}

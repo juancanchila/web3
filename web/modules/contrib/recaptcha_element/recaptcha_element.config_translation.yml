@@ -1,0 +1,5 @@
+recaptcha_element.settings:
+  title: 'ReCaptcha Element settings'
+  base_route_name: recaptcha_element.settings
+  names:
+    - recaptcha_element.settings

@@ -1,0 +1,16 @@
+name: 'Node Layout Builder'
+type: module
+description: 'Builder Layout for node'
+core_version_requirement: ^8 || ^9
+package: 'Maroc Develop'
+dependencies:
+#  - bootstrap_library:bootstrap_library
+#  - colorbutton:colorbutton
+libraries:
+  - node_layout_builder/nlb-leaflet
+  - node_layout_builder/nlb-toastr
+
+# Information added by Drupal.org packaging script on 2020-07-20
+version: '3.0.3'
+project: 'node_layout_builder'
+datestamp: 1595259417

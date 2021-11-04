@@ -1,0 +1,133 @@
+<?php
+
+use Drupal\Component\Render\FormattableMarkup;
+use Drupal\Core\Form\FormStateInterface;
+
+define('WEBFORM_JAVASCRIPT_CALCULATION_LIBRARY', 'libraries/WebformJavaScript');
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function webform_javascript_field_form_webform_ui_element_form_alter(&$form, FormStateInterface $form_state) {
+  // Define default properties.
+  $default_custom_properties = [
+    'webform_javascript_field' => '',
+  ];
+
+  // Append the $default_custom_properties to $default_properties stored in the
+  // webform's state. This allows default custom properties to be removed when
+  // the webform is submitted. If this is omitted, custom properties will always
+  // be appended to the element's properties.
+  // @see \Drupal\webform\Plugin\WebformElementBase::getConfigurationFormProperties
+  $form_state->set(
+    'default_properties',
+    $form_state->get('default_properties') + $default_custom_properties
+  );
+
+  // Retrieve the values from the custom properties element's default value.
+  // @see \Drupal\webform\Plugin\WebformElementBase::buildConfigurationForm
+  $custom_properties = $form['properties']['custom']['properties']['#default_value'];
+
+  // Make sure to unset the custom properties which are going to be handled via
+  // the below webform element.
+  $form['properties']['custom']['properties']['#default_value'] = array_diff_key(
+    $custom_properties,
+    $default_custom_properties
+  );
+
+  // Finally, append the default custom property values.
+  $custom_properties += $default_custom_properties;
+  $field_name = $form['properties']['element']['key']['#default_value'] ?
+    $form['properties']['element']['key']['#default_value'] :
+    t('field-machine-name');
+
+  $form['properties']['webform_javascript_field'] = [
+    '#type' => 'details',
+    '#title' => t('Webform JavaScript Field'),
+    '#group' => 'tab_general',
+  ];
+
+  // Define the parents for all custom properties to ensure the submitted value
+  // is added to the element's properties render array.
+  // @see \Drupal\webform_ui\Form\WebformUiElementFormBase::submitForm
+  $form['properties']['webform_javascript_field']['snippet'] = [
+    '#type' => 'textarea',
+    '#title' => t('JavaScript snippet'),
+    '#description' => t('You can access this field by referencing %field_name in jQuery.
+    For example, for textfield JavaScript snippet may look like this:<br />
+    $("input[name=\'' . $field_name . '\']").focusout(function() {<br />
+    &nbsp;&nbsp;alert($(this).val());<br />
+    });',
+      ['%field_name' => $field_name]),
+    '#parents' => ['properties', 'webform_javascript_field'],
+    '#default_value' => $custom_properties['webform_javascript_field'],
+  ];
+}
+
+/**
+ * Implements hook_webform_element_alter().
+ *
+ * Attaches JavaScript snippets to the page. The snippets are configured per
+ * Webform element.
+ */
+function webform_javascript_field_webform_element_alter(array &$element, FormStateInterface $form_state, array $context) {
+  $javascript = !empty($element['#webform_javascript_field']) ? $element['#webform_javascript_field'] : NULL;
+  // Skip if the element doesn't have any snippet.
+  if (!$javascript) {
+    return;
+  }
+
+  $key = new FormattableMarkup('@module_@key', [
+    '@module' => 'webform_javascript_field',
+    '@key' => $element['#webform_id'],
+  ]);
+
+  $function_name = new FormattableMarkup('@module_@key', [
+    '@module' => 'webform_javascript_field',
+    '@key' => $element['#webform_key'],
+  ]);
+  $javascript_function = "function $function_name() { $javascript }";
+
+  // Prepare JavaScript that handles form fields by default and after AJAX
+  // request.
+  $javascript = "window.addEventListener('load', function () {
+    (function ($) {
+      $javascript_function
+      $function_name();
+      Drupal.behaviors.WebformJavaScriptField" . $element['#webform_key'] . " = {
+        attach: function (context) { $function_name(); }
+      };
+    })(jQuery)
+  });";
+
+  $element['#attached']['html_head'][] = [
+    [
+      '#tag' => 'script',
+      '#value' => $javascript,
+    ],
+    $key->__toString(),
+  ];
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Attaches required JavaScript files that contain helper snippets.
+ */
+function webform_javascript_field_webform_submission_form_alter(&$form, FormStateInterface $form_state) {
+  $files = \Drupal::service('file_system')->scanDirectory(WEBFORM_JAVASCRIPT_CALCULATION_LIBRARY, '/\.js$/');
+  foreach ($files as $file => $data) {
+    $file_url = file_create_url($file);
+    if (!$file_url) {
+      continue;
+    }
+
+    $form['#attached']['html_head'][] = [
+      [
+        '#tag' => 'script',
+        '#attributes' => ['src' => $file_url],
+      ],
+      $file_url,
+    ];
+  }
+}

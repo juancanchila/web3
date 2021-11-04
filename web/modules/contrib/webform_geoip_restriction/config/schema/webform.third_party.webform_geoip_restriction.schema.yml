@@ -1,0 +1,20 @@
+webform.admin_settings.third_party.webform_geoip_restriction:
+  type: mapping
+  label: 'Webform GeoIP Restriction'
+  mapping:
+    webform_geoip_restriction:
+      type: boolean
+      label: 'Protect all webforms with GeoIP Restriction'
+    countries:
+      type: list
+      label: 'Countries'
+webform.settings.third_party.webform_geoip_restriction:
+  type: mapping
+  label: 'Webform GeoIP Restriction'
+  mapping:
+    webform_geoip_restriction:
+      type: boolean
+      label: 'Protect all webforms with GeoIP Restriction'
+    countries:
+      type: list
+      label: 'Countries'

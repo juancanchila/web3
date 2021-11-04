@@ -1,0 +1,10 @@
+{
+  "name": "drupal/recaptcha_element",
+  "description": "The ReCaptcha Element module provides integration with Google reCaptcha V3.",
+  "type": "drupal-module",
+  "license": "GPL-2.0+",
+  "require": {
+    "php": ">=7.2.0",
+    "google/recaptcha": "^1.2"
+  }
+}

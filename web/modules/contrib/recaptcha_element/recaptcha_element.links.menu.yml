@@ -1,0 +1,5 @@
+recaptcha_element.settings:
+  title: 'ReCaptcha Element'
+  description: 'Configure ReCaptcha Element module'
+  parent: system.admin_config_services
+  route_name: recaptcha_element.settings

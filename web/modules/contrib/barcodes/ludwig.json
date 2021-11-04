@@ -1,0 +1,12 @@
+{
+  "require": {
+    "tecnickcom/tc-lib-color": {
+      "version": "v1.12.15",
+      "url": "https://github.com/tecnickcom/tc-lib-color/archive/1.12.15.zip"
+    },
+    "tecnickcom/tc-lib-barcode": {
+      "version": "v1.16.1",
+      "url": "https://github.com/tecnickcom/tc-lib-barcode/archive/1.16.1.zip"
+    }
+  }
+}

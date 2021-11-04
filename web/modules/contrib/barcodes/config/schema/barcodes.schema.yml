@@ -1,0 +1,69 @@
+field.formatter.settings.barcode:
+  type: mapping
+  label: 'Barcodes field formatter settings'
+  mapping:
+    type:
+      type: string
+      label: 'Type'
+    color:
+      type: string
+      label: 'Color'
+    height:
+      type: string
+      label: 'Height'
+    width:
+      type: string
+      label: 'Width'
+    padding_top:
+      type: string
+      label: 'Padding-Top'
+    padding_right:
+      type: string
+      label: 'Padding-Right'
+    padding_bottom:
+      type: string
+      label: 'Padding-Bottom'
+    padding_left:
+      type: string
+      label: 'Padding-Left'
+    show_value:
+      type: string
+      label: 'Show value'
+
+block.settings.barcode:
+  type: block_settings
+  label: 'Barcode block settings'
+  mapping:
+    type:
+      type: string
+      label: 'Type'
+    format:
+      type: string
+      label: 'Display format'
+    value:
+      type: string
+      label: 'The barcode value'
+    color:
+      type: string
+      label: 'Color'
+    height:
+      type: string
+      label: 'Height'
+    width:
+      type: string
+      label: 'Width'
+    padding_top:
+      type: string
+      label: 'Padding-Top'
+    padding_right:
+      type: string
+      label: 'Padding-Right'
+    padding_bottom:
+      type: string
+      label: 'Padding-Bottom'
+    padding_left:
+      type: string
+      label: 'Padding-Left'
+    show_value:
+      type: string
+      label: 'Show value'

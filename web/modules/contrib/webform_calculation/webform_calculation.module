@@ -1,0 +1,53 @@
+<?php
+
+/**
+ * @file
+ * Contains webform_calculation.module.
+ */
+
+define('WEBFORM_CALCULATION_LIBRARY', 'libraries/Calculation');
+
+/**
+ * Implements hook_theme().
+ */
+function webform_calculation_theme($existing, $type, $theme, $path) {
+  return [
+    'webform_calculation' => [
+      'variables' => [
+        'submission' => NULL,
+        'result' => NULL,
+        'element' => NULL,
+      ],
+    ],
+  ];
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK().
+ */
+function webform_calculation_theme_suggestions_webform_calculation(array $variables) {
+  return [
+    'webform_calculation__' . $variables['submission']->getWebform()->id(),
+    'webform_calculation__' . $variables['submission']->getWebform()->id() . '__' . $variables['element'],
+  ];
+}
+
+/**
+ * Implements hook_theme_registry_alter().
+ *
+ * Adds ability to use template files for webform result outside of the folder
+ * with themes.
+ */
+function webform_calculation_theme_registry_alter(&$theme_registry) {
+  $templates = drupal_find_theme_templates($theme_registry, twig_extension(), WEBFORM_CALCULATION_LIBRARY);
+  foreach ($templates as $template => $info) {
+    $templates[$template]['type'] = isset($templates[$template]['type']) ? $templates[$template]['type'] : 'theme_engine';
+    $templates[$template]['preprocess functions'] = [
+      'template_preprocess_webform',
+    ];
+  }
+
+  // If template is already exists then leave it as is, if there is no template
+  // in the theme folder then use template from the libraries folder.
+  $theme_registry = $theme_registry + $templates;
+}
